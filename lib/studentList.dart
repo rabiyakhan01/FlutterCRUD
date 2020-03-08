@@ -3,8 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import 'studentdetails.dart';
 
-
 class ListPage extends StatefulWidget {
+
+  final DocumentSnapshot crud;  
+
+  ListPage({this.crud});
   
   @override
   _ListPageState createState() => _ListPageState();
@@ -13,7 +16,9 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   
   final db = Firestore.instance;
-  DocumentSnapshot document;
+  
+
+  String docID;
   
 
   Future<void> getPosts()async{
@@ -27,6 +32,8 @@ class _ListPageState extends State<ListPage> {
   navigateToDetail(DocumentSnapshot crud){
     Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(crud: crud,)));
   }
+
+ 
  
 
 @override
@@ -50,7 +57,16 @@ Widget build(BuildContext context) {
                    title: new Text(document['student name']),
                    onTap: () => navigateToDetail(document),
                    trailing: IconButton(icon: Icon(Icons.delete),
-                    onPressed: (){},
+                    onPressed: (){
+                    Firestore.instance.collection('CRUD').getDocuments()
+                    .then((querySnapshot) {
+                    querySnapshot.documents.forEach((docID) {
+                    if(docID.data["student id"] == document["student id"]){
+                    docID.reference.delete() ;}
+        });   
+      });
+           
+                    },
                     ),
                 );   
             }).toList(),
@@ -59,45 +75,7 @@ Widget build(BuildContext context) {
             } 
       }),
   );
-      }
-    
-      }   
+}
+}   
       
   
-  /*Scaffold(
-    appBar: AppBar(
-      title: Text('Student List'),
-      centerTitle: true,
-    ),
-    body: projectWidget(),
-  );
-}
-
-Widget projectWidget() {
-  return FutureBuilder(
-    future: getPosts(),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.none &&
-          snapshot.hasData == null) {
-       return CircularProgressIndicator();
-
-      }
-      return ListView.builder(
-        itemCount: snapshot.data.length,
-        itemBuilder: (context, index) {
-          return Column(
-            children: <Widget>[
-                ListTile(
-                 title: Text(snapshot.data[index].data["student name"]),
-                 onTap: () => navigateToDetail(snapshot.data[index]),
-                 selected: true,
-              ),      
-            ],
-          );
-        },
-      );
-    },
-   
-  );*/
-
-

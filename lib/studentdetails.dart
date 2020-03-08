@@ -16,9 +16,10 @@ class _DetailPageState extends State<DetailPage> {
   TextEditingController nameController=new TextEditingController();
   TextEditingController gradeController=new TextEditingController();
   TextEditingController addressController=new TextEditingController();
-  DocumentSnapshot crud;
+  
   DocumentSnapshot doc;
   final db = Firestore.instance;
+  
           @override
           Widget build(BuildContext context) {
             return Scaffold(
@@ -33,7 +34,7 @@ class _DetailPageState extends State<DetailPage> {
                       size: 26.0,
                       ), 
                       onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) =>UpdateData(crud:crud ,) )).then((value){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) =>UpdateData(crud:widget.crud ,) )).then((value){
                         setState(() {
                           doc=widget.crud;
                           nameController.text = widget.crud.data['student name'];
@@ -94,33 +95,7 @@ class _UpdateDataState extends State<UpdateData> {
   TextEditingController addressController=new TextEditingController();
   DocumentSnapshot item;
   final db = Firestore.instance;
-    //DocumentSnapshot _currentDocument;
- /* _updateData() async {
-    await db
-        .collection('CRUD')
-        .document(_currentDocument.documentID)
-        .updateData({'student name':nameController.text,
-          'student grade':gradeController.text,
-          'student address':addressController.text,
-});
-  }*/
-  
-  
- /*void clickUpdate(item) async {  
-   
-    await Firestore.instance.collection("CRUD").document('item.documentID').updateData({  
-          'student name':nameController.text,
-          'student grade':gradeController.text,
-          'student address':addressController.text,
-          
-    }).then((querySnapshot) {  
-        clearForm();  
-            }).catchError((e) {  
-                print(e);  
-            });  
-        }*/
-      
-        
+           
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,10 +138,12 @@ class _UpdateDataState extends State<UpdateData> {
     Firestore.instance.collection('CRUD').getDocuments()
   .then((querySnapshot) {
     querySnapshot.documents.forEach((docID) {
+      if(docID.data["student id"] == widget.crud.data["student id"]){
       docID.reference.updateData({    
         'student name':nameController.text,
           'student grade':gradeController.text,
           'student address':addressController.text,});
+    }
     });   
   });
            
@@ -178,6 +155,5 @@ class _UpdateDataState extends State<UpdateData> {
               )),
             );
             }
-          void clearForm() {}
   }
 

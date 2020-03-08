@@ -19,7 +19,7 @@ class _StudentState extends State<Student> {
   String stname;
   String grade;
   String address;
-  String id;
+  
   
   
   @override
@@ -94,11 +94,12 @@ class _StudentState extends State<Student> {
         ),
       ),
     );
+    
   } 
   void createData() async{
     if (_formKey.currentState.validate()){
       _formKey.currentState.save(); 
-      DocumentReference ref =await db.collection('CRUD').add({'student id':'$stid','student name':'$stname','student grade':'$grade','student address':'$address' ,'id': id});
+      DocumentReference ref =await db.collection('CRUD').add({'student id':'$stid','student name':'$stname','student grade':'$grade','student address':'$address'});
       setState(() =>  stid =ref.documentID);
       print(ref..documentID);
     }
